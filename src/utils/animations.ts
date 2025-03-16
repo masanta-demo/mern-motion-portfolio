@@ -42,9 +42,15 @@ export const useScrollProgress = () => {
   return progress;
 };
 
+// Updated interface to include rootMargin
+interface IntersectionObserverOptions {
+  threshold: number;
+  rootMargin?: string;
+}
+
 export const useIntersectionObserver = (
   ref: RefObject<HTMLElement>,
-  options = { threshold: 0.1 }
+  options: IntersectionObserverOptions = { threshold: 0.1 }
 ) => {
   const [isIntersecting, setIsIntersecting] = useState(false);
 
