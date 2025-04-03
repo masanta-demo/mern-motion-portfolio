@@ -165,7 +165,64 @@ export const initSmoothScrolling = () => {
     });
   };
 
+  // Initialize sticky sections and overlap effects
+  const initStickyOverlapSections = () => {
+    // Set up the sticky background section (About section)
+    gsap.utils.toArray<HTMLElement>('.sticky-section').forEach((section) => {
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        endTrigger: '.overlap-end-trigger', // This should be the section after which the sticky effect should end
+        end: 'bottom top',
+        pin: true,
+        pinSpacing: false,
+      });
+    });
+
+    // Set up the overlap sections
+    gsap.utils.toArray<HTMLElement>('.overlap-section').forEach((section) => {
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top bottom',
+        end: 'bottom top',
+        onEnter: () => {
+          gsap.to(section, { 
+            y: 0, 
+            opacity: 1, 
+            duration: 1, 
+            ease: "power3.out" 
+          });
+        },
+        onLeave: () => {
+          gsap.to(section, { 
+            y: -50, 
+            opacity: 0.8, 
+            duration: 1, 
+            ease: "power3.out" 
+          });
+        },
+        onEnterBack: () => {
+          gsap.to(section, { 
+            y: 0, 
+            opacity: 1, 
+            duration: 1, 
+            ease: "power3.out" 
+          });
+        },
+        onLeaveBack: () => {
+          gsap.to(section, { 
+            y: 50, 
+            opacity: 0, 
+            duration: 1, 
+            ease: "power3.out" 
+          });
+        }
+      });
+    });
+  };
+
   // Call these functions to initialize
   setupSmoothScrolling();
   initScrollTrigger();
+  initStickyOverlapSections();
 };

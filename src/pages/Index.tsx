@@ -50,15 +50,34 @@ const Index = () => {
       <ScrollProgress />
       <Navbar />
       
-      <main className="flex-grow">
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Contact />
+      <main className="flex-grow relative">
+        {/* Hero section - normal scrolling */}
+        <div className="relative z-10">
+          <Hero />
+        </div>
+        
+        {/* About section - becomes sticky in the background */}
+        <div className="sticky-section relative z-0">
+          <About />
+        </div>
+        
+        {/* Skills section - overlaps About section */}
+        <div className="overlap-section relative z-20 bg-background">
+          <Skills />
+        </div>
+        
+        {/* Projects section - overlaps About section */}
+        <div className="overlap-section relative z-20 bg-background overlap-end-trigger">
+          <Projects />
+        </div>
+        
+        {/* Contact section - normal scrolling */}
+        <div className="relative z-10">
+          <Contact />
+        </div>
       </main>
       
-      <footer className="py-8 px-4 border-t border-white/10">
+      <footer className="py-8 px-4 border-t border-white/10 relative z-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-400">
             © {new Date().getFullYear()} <span className="text-white">MernDev</span>. All rights reserved.
