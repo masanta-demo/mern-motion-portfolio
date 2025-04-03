@@ -9,12 +9,18 @@ import Contact from "@/components/sections/Contact";
 import CustomCursor from "@/components/ui/CustomCursor";
 import ParticleBackground from "@/components/ui/ParticleBackground";
 import ScrollProgress from "@/components/ui/ScrollProgress";
+import { initSmoothScrolling } from "@/utils/animations";
 
 const Index = () => {
-  // Reveal animation for elements when scrolling
+  // Initialize GSAP smooth scrolling
+  useEffect(() => {
+    initSmoothScrolling();
+  }, []);
+
+  // Reveal animation for elements when scrolling (now handled by GSAP)
   useEffect(() => {
     const handleScroll = () => {
-      const reveals = document.querySelectorAll(".reveal");
+      const reveals = document.querySelectorAll(".reveal:not(.active)");
       
       reveals.forEach((element) => {
         const windowHeight = window.innerHeight;
@@ -23,8 +29,6 @@ const Index = () => {
         
         if (elementTop < windowHeight - elementVisible) {
           element.classList.add("active");
-        } else {
-          element.classList.remove("active");
         }
       });
     };

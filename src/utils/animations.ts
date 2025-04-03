@@ -1,5 +1,11 @@
 
 import { useEffect, useState, useRef, RefObject } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 export const useMousePosition = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -42,9 +48,14 @@ export const useScrollProgress = () => {
   return progress;
 };
 
+interface IntersectionObserverOptions {
+  threshold?: number;
+  rootMargin?: string;
+}
+
 export const useIntersectionObserver = (
   ref: RefObject<HTMLElement>,
-  options = { threshold: 0.1 }
+  options: IntersectionObserverOptions = { threshold: 0.1 }
 ) => {
   const [isIntersecting, setIsIntersecting] = useState(false);
 
@@ -85,4 +96,76 @@ export const useParallax = (
       window.removeEventListener('scroll', handleScroll);
     };
   }, [ref, speed]);
+};
+
+// Initialize GSAP smooth scrolling
+export const initSmoothScrolling = () => {
+  // Setup smooth scrolling for anchor links
+  const setupSmoothScrolling = () => {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        if (targetId !== '#') {
+          gsap.to(window, {
+            duration: 1.5,
+            scrollTo: {
+              y: targetId,
+              offsetY: 70, // Offset for fixed header
+            },
+            ease: "power3.inOut"
+          });
+        }
+      });
+    });
+  };
+
+  // Initialize ScrollTrigger for reveal animations
+  const initScrollTrigger = () => {
+    ScrollTrigger.batch('.reveal', {
+      onEnter: (elements) => {
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          stagger: 0.15,
+          duration: 0.8,
+          ease: "power3.out"
+        });
+      },
+      onLeave: (elements) => {
+        gsap.to(elements, {
+          opacity: 0,
+          y: -20,
+          duration: 0.8,
+          ease: "power3.out"
+        });
+      },
+      onEnterBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 1,
+          y: 0,
+          stagger: 0.15,
+          duration: 0.8,
+          ease: "power3.out"
+        });
+      },
+      onLeaveBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 0,
+          y: 20,
+          duration: 0.8,
+          ease: "power3.out"
+        });
+      }
+    });
+
+    // Refresh ScrollTrigger when all content is loaded
+    window.addEventListener('load', () => {
+      ScrollTrigger.refresh();
+    });
+  };
+
+  // Call these functions to initialize
+  setupSmoothScrolling();
+  initScrollTrigger();
 };

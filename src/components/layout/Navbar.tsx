@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from "react";
+import gsap from "gsap";
 
 interface NavItem {
   title: string;
@@ -42,6 +43,27 @@ const Navbar: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    e.preventDefault();
+    
+    // Close mobile menu if open
+    if (isMobileMenuOpen) {
+      setIsMobileMenuOpen(false);
+    }
+    
+    // Smooth scroll with GSAP
+    if (targetId !== '#') {
+      gsap.to(window, {
+        duration: 1.5,
+        scrollTo: {
+          y: targetId,
+          offsetY: 70, // Account for fixed header
+        },
+        ease: "power3.inOut"
+      });
+    }
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
@@ -51,7 +73,11 @@ const Navbar: React.FC = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex justify-between items-center">
-        <a href="#home" className="text-xl md:text-2xl font-display font-bold tracking-tight text-gradient-blue">
+        <a 
+          href="#home" 
+          className="text-xl md:text-2xl font-display font-bold tracking-tight text-gradient-blue"
+          onClick={(e) => handleNavClick(e, '#home')}
+        >
           <span className="text-white">Mern</span>Dev
         </a>
 
@@ -61,6 +87,7 @@ const Navbar: React.FC = () => {
             <a
               key={item.href}
               href={item.href}
+              onClick={(e) => handleNavClick(e, item.href)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                 activeSection === item.href.substring(1)
                   ? "text-white bg-blue-500/20 hover:bg-blue-500/30"
@@ -70,7 +97,7 @@ const Navbar: React.FC = () => {
               {item.title}
             </a>
           ))}
-          <button className="ml-4 px-5 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full transition-all duration-300 transform hover:-translate-y-0.5">
+          <button className="ml-4 px-5 py-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white font-medium rounded-full transition-all duration-300 transform hover:-translate-y-0.5">
             Resume
           </button>
         </nav>
@@ -118,7 +145,7 @@ const Navbar: React.FC = () => {
             <a
               key={item.href}
               href={item.href}
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={(e) => handleNavClick(e, item.href)}
               className={`block px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
                 activeSection === item.href.substring(1)
                   ? "text-white bg-blue-500/20"
@@ -130,8 +157,8 @@ const Navbar: React.FC = () => {
           ))}
           <a
             href="#resume"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="block px-4 py-2 mt-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md transition-all duration-300"
+            onClick={(e) => handleNavClick(e, '#resume')}
+            className="block px-4 py-2 mt-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-600 text-white font-medium rounded-md transition-all duration-300"
           >
             Resume
           </a>
