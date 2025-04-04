@@ -22,6 +22,9 @@ const Contact: React.FC = () => {
   
   useEffect(() => {
     if (isInView && formRef.current) {
+      // Make sure the content is fully visible before animations start
+      gsap.set(formRef.current, { opacity: 1, visibility: "visible" });
+      
       gsap.fromTo(
         formRef.current.querySelectorAll('.form-element'),
         { y: 30, opacity: 0 },
@@ -30,7 +33,12 @@ const Contact: React.FC = () => {
           opacity: 1, 
           stagger: 0.1, 
           duration: 0.6, 
-          ease: "power3.out" 
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: formRef.current,
+            start: "top 80%", // Start animation when top of element reaches 80% from the top of viewport
+            toggleActions: "play none none none"
+          }
         }
       );
     }
@@ -67,7 +75,7 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-20 relative overflow-hidden">
+    <section id="contact" className="py-20 relative overflow-hidden z-10">
       <div className="absolute inset-0 bg-gradient-to-b from-background to-blue-950/20 pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-blue-500/5 to-transparent pointer-events-none"></div>
       <div className="absolute top-20 -right-32 w-96 h-96 rounded-full bg-blue-500/5 blur-3xl"></div>

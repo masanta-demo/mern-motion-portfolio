@@ -71,13 +71,13 @@ const Index = () => {
           <Projects />
         </div>
         
-        {/* Contact section - normal scrolling */}
-        <div className="relative z-10">
+        {/* Contact section - fully visible section with its own z-index */}
+        <div className="relative z-30 bg-background">
           <Contact />
         </div>
       </main>
       
-      <footer className="py-8 px-4 border-t border-white/10 relative z-10">
+      <footer className="py-8 px-4 border-t border-white/10 relative z-30 glass-dark">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-400">
             © {new Date().getFullYear()} <span className="text-white">MernDev</span>. All rights reserved.

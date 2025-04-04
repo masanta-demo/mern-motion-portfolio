@@ -8,6 +8,7 @@ interface Particle {
   speedX: number;
   speedY: number;
   color: string;
+  originalSize: number;
 }
 
 interface ParticleBackgroundProps {
@@ -34,7 +35,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particles = useRef<Particle[]>([]);
   const animationFrameId = useRef<number>(0);
-  const mouse = useRef({ x: 0, y: 0 });
+  const mouse = useRef({ x: 0, y: 0, active: false });
 
   // Create particles
   const createParticles = (canvas: HTMLCanvasElement) => {
@@ -45,6 +46,7 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         size,
+        originalSize: size,
         speedX: (Math.random() - 0.5) * speed,
         speedY: (Math.random() - 0.5) * speed,
         color: particleColors[Math.floor(Math.random() * particleColors.length)],
@@ -70,6 +72,26 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
         particle.speedY *= -1;
       }
       
+      // Calculate distance from mouse for hover effect
+      if (mouse.current.active) {
+        const mouseDistance = Math.sqrt(
+          (particle.x - mouse.current.x) ** 2 + (particle.y - mouse.current.y) ** 2
+        );
+        
+        // Increase size when mouse is near
+        const interactionDistance = 200;
+        if (mouseDistance < interactionDistance) {
+          // Scale between 1-3x original size based on proximity
+          const scaleFactor = 1 + (2 * (1 - mouseDistance / interactionDistance));
+          particle.size = particle.originalSize * scaleFactor;
+        } else {
+          // Reset to original size when mouse is far
+          particle.size = particle.originalSize;
+        }
+      } else {
+        particle.size = particle.originalSize;
+      }
+      
       // Draw particle
       ctx.beginPath();
       ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
@@ -93,22 +115,24 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
         }
       }
       
-      // Connect to mouse if close enough
-      const mouseDistance = Math.sqrt(
-        (particle.x - mouse.current.x) ** 2 + (particle.y - mouse.current.y) ** 2
-      );
-      
-      if (mouseDistance < linkDistance * 1.5) {
-        ctx.beginPath();
-        ctx.moveTo(particle.x, particle.y);
-        ctx.lineTo(mouse.current.x, mouse.current.y);
-        ctx.strokeStyle = `rgba(30, 174, 219, ${linkOpacity * 2 * (1 - mouseDistance / (linkDistance * 1.5))})`;
-        ctx.lineWidth = linkWidth * 2;
-        ctx.stroke();
+      // Connect to mouse if close enough and mouse is active
+      if (mouse.current.active) {
+        const mouseDistance = Math.sqrt(
+          (particle.x - mouse.current.x) ** 2 + (particle.y - mouse.current.y) ** 2
+        );
         
-        // Slightly attract particles to mouse
-        particle.x += (mouse.current.x - particle.x) * 0.02;
-        particle.y += (mouse.current.y - particle.y) * 0.02;
+        if (mouseDistance < linkDistance * 1.5) {
+          ctx.beginPath();
+          ctx.moveTo(particle.x, particle.y);
+          ctx.lineTo(mouse.current.x, mouse.current.y);
+          ctx.strokeStyle = `rgba(30, 174, 219, ${linkOpacity * 2 * (1 - mouseDistance / (linkDistance * 1.5))})`;
+          ctx.lineWidth = linkWidth * 2;
+          ctx.stroke();
+          
+          // Attract particles to mouse more strongly
+          particle.x += (mouse.current.x - particle.x) * 0.03;
+          particle.y += (mouse.current.y - particle.y) * 0.03;
+        }
       }
     });
   };
@@ -132,10 +156,20 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
     
     // Track mouse position
     const handleMouseMove = (e: MouseEvent) => {
-      mouse.current = { x: e.clientX, y: e.clientY };
+      mouse.current = { x: e.clientX, y: e.clientY, active: true };
+    };
+    
+    const handleMouseLeave = () => {
+      mouse.current = { ...mouse.current, active: false };
+    };
+    
+    const handleMouseEnter = () => {
+      mouse.current = { ...mouse.current, active: true };
     };
     
     window.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseleave", handleMouseLeave);
+    document.addEventListener("mouseenter", handleMouseEnter);
     
     // Animation loop
     const animate = () => {
@@ -149,6 +183,8 @@ const ParticleBackground: React.FC<ParticleBackgroundProps> = ({
     return () => {
       window.removeEventListener("resize", setCanvasSize);
       window.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseleave", handleMouseLeave);
+      document.removeEventListener("mouseenter", handleMouseEnter);
       cancelAnimationFrame(animationFrameId.current);
     };
   }, [particleCount, particleColors, minSize, maxSize, speed, linkDistance, linkWidth, linkOpacity]);
