@@ -167,8 +167,41 @@ export const initSmoothScrolling = () => {
 
   // Initialize sticky sections and overlap effects
   const initStickyOverlapSections = () => {
+    // Set up the full visible section (initial About view)
+    gsap.utils.toArray<HTMLElement>('.full-visible-section').forEach((section) => {
+      // Make this section fully visible during scrolling
+      ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: 'bottom top',
+        toggleActions: 'play none none reverse',
+        onEnter: () => {
+          section.style.opacity = '1';
+        },
+        onLeave: () => {
+          section.style.opacity = '0';
+          // When this section is fully scrolled through, activate the sticky section
+          const stickySection = document.querySelector('.delayed-sticky') as HTMLElement;
+          if (stickySection) {
+            stickySection.style.visibility = 'visible';
+          }
+        },
+        onEnterBack: () => {
+          section.style.opacity = '1';
+          // Hide sticky section when scrolling back up
+          const stickySection = document.querySelector('.delayed-sticky') as HTMLElement;
+          if (stickySection) {
+            stickySection.style.visibility = 'hidden';
+          }
+        }
+      });
+    });
+
     // Set up the sticky background section (About section)
     gsap.utils.toArray<HTMLElement>('.sticky-section').forEach((section) => {
+      // Initially hide the sticky section
+      section.style.visibility = 'hidden';
+      
       ScrollTrigger.create({
         trigger: section,
         start: 'top top',

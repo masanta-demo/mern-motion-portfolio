@@ -56,8 +56,13 @@ const Index = () => {
           <Hero />
         </div>
         
-        {/* About section - becomes sticky in the background */}
-        <div className="sticky-section relative z-0">
+        {/* About section - fully visible before becoming sticky */}
+        <div className="relative z-10 full-visible-section">
+          <About />
+        </div>
+        
+        {/* About section - becomes sticky in the background after being fully visible */}
+        <div className="sticky-section delayed-sticky relative z-0">
           <About />
         </div>
         
