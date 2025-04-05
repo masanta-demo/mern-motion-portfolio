@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useRef, RefObject } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -97,7 +98,7 @@ export const useParallax = (
   }, [ref, speed]);
 };
 
-// Initialize GSAP smooth scrolling
+// Initialize GSAP smooth scrolling and page transitions
 export const initSmoothScrolling = () => {
   // Setup smooth scrolling for anchor links
   const setupSmoothScrolling = () => {
@@ -166,7 +167,19 @@ export const initSmoothScrolling = () => {
 
   // Initialize animations for sections
   const initSectionAnimations = () => {
-    // Set up the About section animation
+    // Set up sticky Hero section with page-by-page scrolling
+    const heroSection = document.querySelector('#home');
+    if (heroSection) {
+      ScrollTrigger.create({
+        trigger: heroSection,
+        start: "top top",
+        end: "bottom top",
+        pin: true,
+        pinSpacing: false
+      });
+    }
+    
+    // Set up the About section animation - will overlap Hero
     const aboutSection = document.querySelector('#about');
     if (aboutSection) {
       ScrollTrigger.create({
@@ -208,8 +221,20 @@ export const initSmoothScrolling = () => {
         }
       });
     }
+    
+    // Skills section sticky background with parallax effect
+    const skillsSection = document.querySelector('#skills');
+    if (skillsSection) {
+      ScrollTrigger.create({
+        trigger: skillsSection,
+        start: "top top",
+        end: "bottom top",
+        pin: true,
+        pinSpacing: true
+      });
+    }
 
-    // Projects section pinning
+    // Projects section pinning with increased pinSpacing for smoother transitions
     const projectsSection = document.querySelector('#projects');
     if (projectsSection) {
       ScrollTrigger.create({
@@ -230,14 +255,33 @@ export const initSmoothScrolling = () => {
         }
       });
     }
+    
+    // Contact section overlaps Projects with a sliding effect
+    const contactSection = document.querySelector('#contact');
+    if (contactSection) {
+      ScrollTrigger.create({
+        trigger: contactSection,
+        start: "top bottom",
+        end: "top top",
+        scrub: 1,
+        onEnter: () => {
+          gsap.fromTo(contactSection, 
+            { y: 100, opacity: 0 },
+            { y: 0, opacity: 1, duration: 1, ease: "power3.out" }
+          );
+        }
+      });
+    }
 
-    // Set up the overlap sections (Skills and Projects)
-    gsap.utils.toArray<HTMLElement>('.overlap-section').forEach((section) => {
+    // Set up the overlap sections with smooth transitions
+    gsap.utils.toArray<HTMLElement>('.overlap-section').forEach((section, index) => {
+      const prevSections = document.querySelectorAll('section')[index];
+      
       ScrollTrigger.create({
         trigger: section,
         start: 'top bottom',
-        end: 'bottom top',
-        toggleActions: 'play none none reverse',
+        end: 'top 30%',
+        scrub: 1,
         onEnter: () => {
           gsap.to(section, { 
             y: 0, 
@@ -245,11 +289,21 @@ export const initSmoothScrolling = () => {
             duration: 1, 
             ease: "power3.out" 
           });
+          
+          // Fade out previous section slightly
+          if (prevSections) {
+            gsap.to(prevSections, {
+              opacity: 0.5,
+              y: -50,
+              duration: 1,
+              ease: "power3.out"
+            });
+          }
         },
         onLeave: () => {
           gsap.to(section, { 
             y: -50, 
-            opacity: 0.8, 
+            opacity: 1, 
             duration: 1, 
             ease: "power3.out" 
           });
@@ -261,10 +315,20 @@ export const initSmoothScrolling = () => {
             duration: 1, 
             ease: "power3.out" 
           });
+          
+          // Fade in previous section
+          if (prevSections) {
+            gsap.to(prevSections, {
+              opacity: 1,
+              y: 0,
+              duration: 1,
+              ease: "power3.out"
+            });
+          }
         },
         onLeaveBack: () => {
           gsap.to(section, { 
-            y: 50, 
+            y: 100, 
             opacity: 0, 
             duration: 1, 
             ease: "power3.out" 

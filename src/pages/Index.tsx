@@ -51,33 +51,33 @@ const Index = () => {
       <Navbar />
       
       <main className="flex-grow relative">
-        {/* Hero section - normal scrolling */}
-        <div className="relative z-10">
+        {/* Hero section - sticky background */}
+        <div className="relative z-10 min-h-screen" id="home">
           <Hero />
         </div>
         
-        {/* About section - single instance with proper animation */}
-        <div className="relative z-10 animate-section" id="about">
+        {/* About section - overlaps Hero */}
+        <div className="relative z-20 bg-background bg-opacity-95 border-t border-white/5 rounded-t-[40px] shadow-xl" id="about">
           <About />
         </div>
         
-        {/* Skills section - overlaps About section */}
-        <div className="overlap-section relative z-20 bg-background">
+        {/* Skills section - sticky background */}
+        <div className="overlap-section relative z-20 bg-background min-h-screen" id="skills">
           <Skills />
         </div>
         
-        {/* Projects section */}
-        <div className="overlap-section relative z-20 bg-background overlap-end-trigger">
+        {/* Projects section - sticky with parallax */}
+        <div className="overlap-section relative z-30 bg-background min-h-screen" id="projects">
           <Projects />
         </div>
         
-        {/* Contact section */}
-        <div className="relative z-30 bg-background">
+        {/* Contact section - overlaps Projects */}
+        <div className="relative z-40 bg-background border-t border-white/5 rounded-t-[40px] shadow-xl" id="contact">
           <Contact />
         </div>
       </main>
       
-      <footer className="py-8 px-4 border-t border-white/10 relative z-30 glass-dark">
+      <footer className="py-8 px-4 border-t border-white/10 relative z-50 glass-dark">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray-400">
             © {new Date().getFullYear()} <span className="text-white">MernDev</span>. All rights reserved.
