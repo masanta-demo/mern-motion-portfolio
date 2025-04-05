@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SectionTransition from "@/components/ui/SectionTransition";
 
 interface Project {
@@ -71,13 +71,14 @@ const projects: Project[] = [
 
 const Projects: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<"all" | "featured" | "frontend" | "fullstack" | "other">("all");
+  const sectionRef = useRef<HTMLElement>(null);
 
   const filteredProjects = activeCategory === "all" 
     ? projects 
     : projects.filter(project => project.category === activeCategory);
 
   return (
-    <section id="projects" className="py-20 relative overflow-hidden dot-pattern">
+    <section id="projects" className="py-20 relative overflow-hidden dot-pattern" ref={sectionRef}>
       <div className="absolute top-40 -left-20 w-80 h-80 rounded-full bg-blue-500/5 blur-3xl"></div>
       
       <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
@@ -110,7 +111,7 @@ const Projects: React.FC = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProjects.map((project, index) => (
-            <SectionTransition key={project.title} delay={index * 100}>
+            <SectionTransition key={project.title} delay={index * 100} resetOnLeave={false}>
               <div className="glass rounded-xl overflow-hidden transition-all duration-300 hover:translate-y-[-5px] hover:shadow-lg hover:shadow-blue-500/10 group">
                 <div className="relative aspect-video w-full overflow-hidden">
                   <img
@@ -156,7 +157,7 @@ const Projects: React.FC = () => {
           ))}
         </div>
         
-        <SectionTransition delay={300}>
+        <SectionTransition delay={300} resetOnLeave={false}>
           <div className="mt-16 text-center">
             <p className="text-gray-400 mb-6">
               These are just a few examples of my work. Visit my GitHub for more projects.

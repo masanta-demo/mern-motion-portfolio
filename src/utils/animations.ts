@@ -209,6 +209,28 @@ export const initSmoothScrolling = () => {
       });
     }
 
+    // Projects section pinning
+    const projectsSection = document.querySelector('#projects');
+    if (projectsSection) {
+      ScrollTrigger.create({
+        trigger: projectsSection,
+        start: "top top",
+        end: "bottom top",
+        pin: true,
+        pinSpacing: true,
+        markers: false,
+        scrub: 0.5,
+        anticipatePin: 1,
+        onEnter: () => {
+          gsap.to(projectsSection, { 
+            opacity: 1,
+            duration: 0.4,
+            ease: "power2.out" 
+          });
+        }
+      });
+    }
+
     // Set up the overlap sections (Skills and Projects)
     gsap.utils.toArray<HTMLElement>('.overlap-section').forEach((section) => {
       ScrollTrigger.create({
