@@ -15,6 +15,7 @@ interface SectionTransitionProps {
     | "slide-in-right";
   delay?: number;
   immediate?: boolean;
+  resetOnLeave?: boolean; // New prop to control whether element resets when leaving viewport
 }
 
 const SectionTransition: React.FC<SectionTransitionProps> = ({
@@ -25,6 +26,7 @@ const SectionTransition: React.FC<SectionTransitionProps> = ({
   animation = "fade-in-up",
   delay = 0,
   immediate = false,
+  resetOnLeave = true, // Default to true to match previous behavior
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useIntersectionObserver(ref, {
@@ -45,8 +47,8 @@ const SectionTransition: React.FC<SectionTransitionProps> = ({
     if (isInView) {
       ref.current.style.opacity = "1";
       ref.current.style.transform = "translateY(0) translateX(0)";
-    } else {
-      // Reset if not in view (for scroll back up)
+    } else if (resetOnLeave) {
+      // Only reset if resetOnLeave is true
       switch (animation) {
         case "fade-in-up":
           ref.current.style.opacity = "0";
@@ -68,7 +70,7 @@ const SectionTransition: React.FC<SectionTransitionProps> = ({
           ref.current.style.opacity = "0";
       }
     }
-  }, [isInView, animation, immediate]);
+  }, [isInView, animation, immediate, resetOnLeave]);
 
   return (
     <div
@@ -94,4 +96,3 @@ const SectionTransition: React.FC<SectionTransitionProps> = ({
 };
 
 export default SectionTransition;
-

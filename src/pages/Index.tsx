@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/sections/Hero";
@@ -55,13 +56,8 @@ const Index = () => {
           <Hero />
         </div>
         
-        {/* About section - fully visible before becoming sticky */}
-        <div className="relative z-10 full-visible-section">
-          <About />
-        </div>
-        
-        {/* About section - becomes sticky in the background after being fully visible */}
-        <div className="sticky-section delayed-sticky relative z-0">
+        {/* About section - single instance with proper animation */}
+        <div className="relative z-10 animate-section" id="about">
           <About />
         </div>
         
@@ -70,12 +66,12 @@ const Index = () => {
           <Skills />
         </div>
         
-        {/* Projects section - overlaps About section */}
+        {/* Projects section */}
         <div className="overlap-section relative z-20 bg-background overlap-end-trigger">
           <Projects />
         </div>
         
-        {/* Contact section - fully visible section with its own z-index */}
+        {/* Contact section */}
         <div className="relative z-30 bg-background">
           <Contact />
         </div>

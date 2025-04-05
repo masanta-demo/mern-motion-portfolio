@@ -164,59 +164,58 @@ export const initSmoothScrolling = () => {
     });
   };
 
-  // Initialize sticky sections and overlap effects
-  const initStickyOverlapSections = () => {
-    // Set up the full visible section (initial About view)
-    gsap.utils.toArray<HTMLElement>('.full-visible-section').forEach((section) => {
-      // Make this section fully visible during scrolling
+  // Initialize animations for sections
+  const initSectionAnimations = () => {
+    // Set up the About section animation
+    const aboutSection = document.querySelector('#about');
+    if (aboutSection) {
       ScrollTrigger.create({
-        trigger: section,
-        start: 'top top',
-        end: 'bottom top',
+        trigger: aboutSection,
+        start: 'top 80%',
+        end: 'bottom 20%',
         toggleActions: 'play none none reverse',
         onEnter: () => {
-          section.style.opacity = '1';
+          gsap.to(aboutSection, { 
+            opacity: 1, 
+            y: 0, 
+            duration: 0.8, 
+            ease: "power3.out" 
+          });
         },
         onLeave: () => {
-          section.style.opacity = '0';
-          // When this section is fully scrolled through, activate the sticky section
-          const stickySection = document.querySelector('.delayed-sticky') as HTMLElement;
-          if (stickySection) {
-            stickySection.style.visibility = 'visible';
-          }
+          gsap.to(aboutSection, { 
+            opacity: 0.7, 
+            y: -30, 
+            duration: 0.8, 
+            ease: "power3.out" 
+          });
         },
         onEnterBack: () => {
-          section.style.opacity = '1';
-          // Hide sticky section when scrolling back up
-          const stickySection = document.querySelector('.delayed-sticky') as HTMLElement;
-          if (stickySection) {
-            stickySection.style.visibility = 'hidden';
-          }
+          gsap.to(aboutSection, { 
+            opacity: 1, 
+            y: 0, 
+            duration: 0.8, 
+            ease: "power3.out" 
+          });
+        },
+        onLeaveBack: () => {
+          gsap.to(aboutSection, { 
+            opacity: 0.7, 
+            y: 30, 
+            duration: 0.8, 
+            ease: "power3.out" 
+          });
         }
       });
-    });
+    }
 
-    // Set up the sticky background section (About section)
-    gsap.utils.toArray<HTMLElement>('.sticky-section').forEach((section) => {
-      // Initially hide the sticky section
-      section.style.visibility = 'hidden';
-      
-      ScrollTrigger.create({
-        trigger: section,
-        start: 'top top',
-        endTrigger: '.overlap-end-trigger', // This should be the section after which the sticky effect should end
-        end: 'bottom top',
-        pin: true,
-        pinSpacing: false,
-      });
-    });
-
-    // Set up the overlap sections
+    // Set up the overlap sections (Skills and Projects)
     gsap.utils.toArray<HTMLElement>('.overlap-section').forEach((section) => {
       ScrollTrigger.create({
         trigger: section,
         start: 'top bottom',
         end: 'bottom top',
+        toggleActions: 'play none none reverse',
         onEnter: () => {
           gsap.to(section, { 
             y: 0, 
@@ -256,5 +255,5 @@ export const initSmoothScrolling = () => {
   // Call these functions to initialize
   setupSmoothScrolling();
   initScrollTrigger();
-  initStickyOverlapSections();
+  initSectionAnimations();
 };
