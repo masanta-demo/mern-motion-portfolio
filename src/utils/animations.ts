@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useRef, RefObject } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
