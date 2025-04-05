@@ -45,28 +45,6 @@ const SectionTransition: React.FC<SectionTransitionProps> = ({
     if (isInView) {
       ref.current.style.opacity = "1";
       ref.current.style.transform = "translateY(0) translateX(0)";
-    } else {
-      // Reset if not in view (for scroll back up)
-      switch (animation) {
-        case "fade-in-up":
-          ref.current.style.opacity = "0";
-          ref.current.style.transform = "translateY(20px)";
-          break;
-        case "fade-in-down":
-          ref.current.style.opacity = "0";
-          ref.current.style.transform = "translateY(-20px)";
-          break;
-        case "slide-in-left":
-          ref.current.style.opacity = "0";
-          ref.current.style.transform = "translateX(-20px)";
-          break;
-        case "slide-in-right":
-          ref.current.style.opacity = "0";
-          ref.current.style.transform = "translateX(20px)";
-          break;
-        default:
-          ref.current.style.opacity = "0";
-      }
     }
   }, [isInView, animation, immediate]);
 

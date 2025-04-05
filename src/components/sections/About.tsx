@@ -4,24 +4,12 @@ import SectionTransition from "@/components/ui/SectionTransition";
 const About: React.FC = () => {
   const imageRef = useRef<HTMLDivElement>(null);
   
-  // Detect if this is inside the full-visible-section
-  const isFullyVisible = () => {
-    // Check if parent has the full-visible-section class
-    if (typeof window !== "undefined") {
-      const parentElement = document.querySelector('.full-visible-section');
-      if (parentElement) {
-        return true;
-      }
-    }
-    return false;
-  };
-
   return (
     <section id="about" className="py-20 relative overflow-hidden dot-pattern">
       <div className="absolute top-40 -left-20 w-80 h-80 rounded-full bg-blue-500/5 blur-3xl"></div>
       
       <div className="max-w-7xl mx-auto px-4 md:px-8 w-full">
-        <SectionTransition immediate={isFullyVisible()}>
+        <SectionTransition immediate={true}>
           <h2 className="text-3xl md:text-5xl font-display font-bold mb-4 text-center">
             About <span className="text-gradient-blue">Me</span>
           </h2>
@@ -34,7 +22,7 @@ const About: React.FC = () => {
           <SectionTransition 
             className="lg:col-span-5" 
             animation="slide-in-left"
-            immediate={isFullyVisible()}
+            immediate={true}
           >
             <div ref={imageRef} className="relative">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl blur opacity-20"></div>
@@ -86,7 +74,7 @@ const About: React.FC = () => {
           <SectionTransition 
             className="lg:col-span-7 text-left" 
             animation="slide-in-right"
-            immediate={isFullyVisible()}
+            immediate={true}
           >
             <h3 className="text-2xl md:text-3xl font-display font-bold mb-4">
               Full Stack MERN Developer

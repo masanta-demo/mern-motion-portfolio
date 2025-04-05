@@ -56,28 +56,23 @@ const Index = () => {
           <Hero />
         </div>
         
-        {/* About section - fully visible before becoming sticky */}
-        <div className="relative z-10 full-visible-section">
+        {/* About section - make it a fully visible section with proper z-index */}
+        <div className="relative z-10 bg-background" id="about-section">
           <About />
         </div>
         
-        {/* About section - becomes sticky in the background after being fully visible */}
-        <div className="sticky-section delayed-sticky relative z-0">
-          <About />
-        </div>
-        
-        {/* Skills section - overlaps About section */}
-        <div className="overlap-section relative z-20 bg-background">
+        {/* Skills section */}
+        <div className="relative z-10 bg-background">
           <Skills />
         </div>
         
-        {/* Projects section - overlaps About section */}
-        <div className="overlap-section relative z-20 bg-background overlap-end-trigger">
+        {/* Projects section */}
+        <div className="relative z-10 bg-background">
           <Projects />
         </div>
         
-        {/* Contact section - fully visible section with its own z-index */}
-        <div className="relative z-30 bg-background">
+        {/* Contact section */}
+        <div className="relative z-10 bg-background">
           <Contact />
         </div>
       </main>
